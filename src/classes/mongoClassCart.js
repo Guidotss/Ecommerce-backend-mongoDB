@@ -11,26 +11,66 @@ export class Cart{
         this.collection = mongoose.model(collection,schema); 
     }
 
-    async getAll(){
-        const cart = await this.collection.find({}); 
+    async getCart(cartiId){
+        const cart = await this.collection.find({_id:cartiId}); 
         return cart; 
     }
 
     async createCart(){
         
-        const createCart = await this.collection.create([]); 
-        return createCart; 
+        const createCart = await this.collection.create({}); 
+        return createCart.id;
     }
     
-    async addProduct(productId){
-        const productIdString = JSON.stringify(productId); 
+    async addProduct(cartId,productId){
+        const productsId = new apiProductos('productos',productsSchema);
+        const prodId = await productsId.findById(productId); 
+        const prodIdString = JSON.stringify(prodId);
 
-        if(productIdString != '{}'){
+        const cartID = await this.collection.find({_id:cartId}); 
+        const cartIDString = JSON.stringify(cartID); 
+        
+        
+
+        if(prodIdString != '{}' && cartIDString != '{}'){
             const products  = new apiProductos('productos',productsSchema); 
             const product = await products.findById(productId);
-            const addProduct = await this.collection.create({productos:product}); 
-            
-            return addProduct; 
+            const cart = await this.collection.updateOne({_id:cartId},{
+                $push:{productos:product}
+            }); 
+
+            return true; 
+        }else{
+            return false; 
         }
     }
+    async deleteCart(cartId){
+        const cartIdString = JSON.stringify(cartId); 
+        
+        if(cartId != ''){
+            await this.collection.deleteOne({_id:cartId}); 
+            return true
+        }else{
+            return false; 
+        }
+    }
+
+    async deleteProduct(cartId,productId){
+        const cartIdString = JSON.stringify(cartId); 
+        const productIdString = JSON.stringify(productId); 
+
+        if(cartIdString != '' && productIdString != ''){
+            const products = new apiProductos('productos',productsSchema); 
+            const product = await products.findById(productId); 
+            const cart = await this.collection.updateOne({_id:cartId},{
+                $pull:{productos:product}
+            }); 
+
+            return true; 
+        }else{
+            return false; 
+        }
+    }
+
+
 }
