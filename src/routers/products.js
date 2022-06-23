@@ -1,5 +1,5 @@
 import {Router} from 'express'; 
-import {userDao as api} from '../daos/index'; 
+import {ProdDao as api} from '../daos/index'; 
 
 
 const router = Router(); 

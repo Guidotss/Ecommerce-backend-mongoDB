@@ -4,13 +4,13 @@ dotenv.config();
 
 
 
-let userDao; 
+let ProdDao; 
 
 switch(process.env.DB_NAME){
         
 case 'mongoDB':
-    import('./users/mongoDBusers').then(({ProductDao}) =>{
-        userDao = new ProductDao(); 
+    import('./products/mongoDBusers').then(({ProductDao}) =>{
+        ProdDao = new ProductDao();  
     });
     
         
@@ -19,4 +19,4 @@ default:
     console.log('hola');
 }
 
-export {userDao}; 
+export {ProdDao}; 
