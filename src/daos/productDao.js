@@ -7,11 +7,12 @@ dotenv.config();
 
 let ProdDao; 
 
+// eslint-disable-next-line no-undef
 switch(process.env.DB_NAME){
         
 case 'mongoDB':
     
-    import('./products/mongoDBusers.js').then(({ProductDao})=>{
+    import('./products/mongoDBProducts.js').then(({ProductDao})=>{
         ProdDao = new ProductDao(); 
     }); 
         

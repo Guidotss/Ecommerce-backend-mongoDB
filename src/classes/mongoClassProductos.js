@@ -17,7 +17,6 @@ export class Productos{
 
     async create(product){
         const productString = JSON.stringify(product); 
-        let id  = 0; 
 
         if(productString != '{}'){
             await this.collection.create(product);
@@ -34,26 +33,35 @@ export class Productos{
 
         if(productString != '[]'){
 
-            const updateProduct = await this.collection.updateOne({_id:productId},{
+            await this.collection.updateOne({_id:productId},{
                 $set:{nombre:obj.nombre,precio:obj.precio,url:obj.url,stock:obj.stock, timeStamp:obj.timeStamp}
-            })
+            });
 
             console.log(product);
 
-            return true
+            return true; 
         }else{
             return false; 
         }
     }
     async deleteProduct(productId){
+            
         if(productId != ''){
-            const product = await this.collection.find({_id:productId}); 
-            console.log(product);
-            await this.collection.deleteOne({_id:productId}); 
-
+            await this.collection.deleteOne({_id:productId});
             return true;
+
         }else{
             return false;
+        }
+    }
+
+    async findById(productId){
+        const productIdString = JSON.stringify(productId); 
+        if(productIdString != ''){
+            const product = await this.collection.find({_id:productId}); 
+            return product; 
+        }else{
+            return 'No se ha encontrado el productos'; 
         }
     }
 }
