@@ -15,16 +15,45 @@ export class Productos{
         return allProducts;
     }
 
-    async create(obj){
-        const newProduct = await this.collection.create(obj); 
-        return newProduct; 
+    async create(product){
+        const productString = JSON.stringify(product); 
+        let id  = 0; 
+
+        if(productString != '{}'){
+            await this.collection.create(product);
+            return true; 
+        }else{
+            return false;
+        }
     }
 
-    async update(PoductId,obj){
-        const updateProduct = await this.collection.updateOne({id:PoductId},{
-            $set:{obj}
-        }); 
+    async update(productId,obj){
 
-        return updateProduct; 
+        const product = await this.collection.find({_id:productId});
+        const productString = JSON.stringify(product); 
+
+        if(productString != '[]'){
+
+            const updateProduct = await this.collection.updateOne({_id:productId},{
+                $set:{nombre:obj.nombre,precio:obj.precio,url:obj.url,stock:obj.stock, timeStamp:obj.timeStamp}
+            })
+
+            console.log(product);
+
+            return true
+        }else{
+            return false; 
+        }
+    }
+    async deleteProduct(productId){
+        if(productId != ''){
+            const product = await this.collection.find({_id:productId}); 
+            console.log(product);
+            await this.collection.deleteOne({_id:productId}); 
+
+            return true;
+        }else{
+            return false;
+        }
     }
 }
