@@ -1,7 +1,6 @@
 import {Router} from 'express'; 
 import {ProdDao as api} from '../daos/index'
 
-
 const router = Router(); 
 
 router.get('/',async(req,res)=>{
