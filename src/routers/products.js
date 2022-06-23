@@ -1,12 +1,12 @@
 import {Router} from 'express'; 
-import {userDao as api} from '../daos/index'; 
+import {ProdDao as api} from '../daos/index'
 
 
 const router = Router(); 
 
 router.get('/',async(req,res)=>{
-    const allProducts = await api.getAll(); 
-    res.json({allProducts}); 
+    const allProduct = await api.getAll(); 
+    res.json(allProduct)
 }); 
 
 
