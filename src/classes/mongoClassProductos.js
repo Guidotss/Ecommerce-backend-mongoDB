@@ -5,7 +5,7 @@ mongoose.connect(config.mongoDB.URL,config.mongoDB.options);
 
 export class Productos{
     constructor(collection,Schema){
-        this.collection = mongoose.model(collectionName,Schema); 
+        this.collection = mongoose.model(collection,Schema); 
     }
 
 
@@ -13,5 +13,18 @@ export class Productos{
         const allProducts = await this.collection.find({}); 
 
         return allProducts;
+    }
+
+    async create(obj){
+        const newProduct = await this.collection.create(obj); 
+        return newProduct; 
+    }
+
+    async update(PoductId,obj){
+        const updateProduct = await this.collection.updateOne({id:PoductId},{
+            $set:{obj}
+        }); 
+
+        return updateProduct; 
     }
 }

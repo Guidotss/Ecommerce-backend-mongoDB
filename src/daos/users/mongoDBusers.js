@@ -1,10 +1,8 @@
-import Productos from '../../classes/mongoClassProductos'; 
+import {Productos} from '../../classes/mongoClassProductos'; 
 import {productsSchema} from '../../models/productsModel'; 
 
-export class ProductosDao extends Productos{
+export class ProductDao extends Productos{
     constructor(){
         super('productos',productsSchema);
     }
 }
-
-

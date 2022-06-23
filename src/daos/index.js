@@ -1,17 +1,22 @@
 import dotenv from 'dotenv'; 
+
 dotenv.config();
 
 
 
-export let userDao = async function(){
-    switch(process.env.DB_NAME){
+let userDao; 
+
+switch(process.env.DB_NAME){
         
-    case 'mongoDB':
-        import('./users/mongoDBusers').then(({ProductosDao})=>{
-            userDao = new ProductosDao(); 
-        }); 
+case 'mongoDB':
+    import('./users/mongoDBusers').then(({ProductDao}) =>{
+        userDao = new ProductDao(); 
+    });
+    
         
-        break; 
-    }
+    break; 
+default:
+    console.log('hola');
 }
 
+export {userDao}; 
