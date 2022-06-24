@@ -57,11 +57,19 @@ export class Productos{
 
     async findById(productId){
         const productIdString = JSON.stringify(productId); 
-        if(productIdString != ''){
-            const product = await this.collection.find({_id:productId}); 
-            return product; 
-        }else{
-            return 'No se ha encontrado el productos'; 
+
+        const checkProductId = productId.split(''); 
+
+        if(checkProductId.length == 24){
+
+
+            if(productIdString != ''){
+                const product = await this.collection.find({_id:productId}); 
+                return product; 
+            }else{
+                return 'No se ha encontrado el productos'; 
+            }
+
         }
     }
 }
