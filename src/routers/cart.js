@@ -4,13 +4,21 @@ import {cartDao as api} from '../daos/cartDao';
 const router = Router(); 
 
 router.get('/:cartId',async(req,res) =>{
+
     const {cartId} = req.params; 
     const cart = await api.getCart(cartId); 
-    return res.json({carrito:cart}); 
+
+    if(cart != undefined){
+        return res.json({carrito:cart}); 
+    }else{
+        return res.json({Error:`El ID:${cartId} es incorrecto`}); 
+    }
 });  
 
 router.post('/',async(req,res)=>{
-    const cart = await api.createCart(); 
+
+    const cart = await api.createCart();
+
     if(cart != undefined){
         return res.json({Mensaje:`Carrito creado con exito. ID:${cart}`}); 
     }else{
@@ -21,10 +29,11 @@ router.post('/',async(req,res)=>{
 router.post('/:cartId/productos/:productId',async(req,res)=>{
     const {cartId,productId}= req.params; 
     const addProduct =  await api.addProduct(cartId,productId); 
+
     if(addProduct){
         return res.json({Mensaje:'Producto agregado con exito'}); 
     }else{
-        return res.json({Mensaje:'Error al agregar producto'}); 
+        return res.json({Error:'Error al agregar producto'}); 
     }
     
 });
@@ -35,7 +44,7 @@ router.delete('/:cartId',async(req,res)=>{
     if(product){
         return res.json({Mensaje:'Carrito eliminado con exito'}); 
     }else{
-        return res.json({Mensaje:'Error al eliminar el carrito'}); 
+        return res.json({Error:`El ID:${cartId} es incorrecto`}); 
     }
 }); 
 
@@ -45,7 +54,7 @@ router.delete('/:cartId/productos/:productId',async(req,res)=>{
     if(deleteProduct){
         return res.json({Mensaje:'Producto eliminado con exito'}); 
     }else{
-        return res.json({Mensaje:'Error al eliminar el producto'});    
+        return res.json({Error:'El ID del carrito o bien el del producto es incorrecto'});    
     }
 
 }); 

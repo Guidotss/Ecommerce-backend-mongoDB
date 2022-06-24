@@ -12,8 +12,19 @@ export class Cart{
     }
 
     async getCart(cartiId){
-        const cart = await this.collection.find({_id:cartiId}); 
-        return cart; 
+        const checkCartId = cartiId.split('');
+        
+        if(checkCartId.length == 24){
+            
+            const cart = await this.collection.find({_id:cartiId}); 
+            const cartIdArray = cart.map(e => e.id); 
+
+            if(cartIdArray.includes(cartiId)){
+                return cart; 
+            }
+        }else{
+            return undefined; 
+        }
     }
 
     async createCart(){
@@ -42,6 +53,7 @@ export class Cart{
                 
                 const products  = new apiProductos('productos',productsSchema); 
                 const product = await products.findById(productId);
+
                 await this.collection.updateOne({_id:cartId},{
                     $push:{productos:product}
                 }); 
@@ -54,33 +66,55 @@ export class Cart{
             return false; 
         }
     }
+
     async deleteCart(cartId){
-        const cartIdString = JSON.stringify(cartId); 
-        
-        if(cartIdString != ''){
-            await this.collection.deleteOne({_id:cartId}); 
-            return true;
+        const checkCartId = cartId.split(''); 
+
+        if(checkCartId.length == 24){
+            const cart = this.collection.find({_id:cartId}); 
+            const cartIdArray = cart.map(e => e.id); 
+
+            if(cartIdArray.includes(cartId)){
+
+                await this.collection.deleteOne({_id:cartId}); 
+                return true;
+
+            }else{
+                return false; 
+            }
         }else{
             return false; 
         }
     }
 
     async deleteProduct(cartId,productId){
-        const cartIdString = JSON.stringify(cartId); 
-        const productIdString = JSON.stringify(productId); 
 
-        if(cartIdString != '' && productIdString != ''){
+
+        const checkProductId = productId.split(''); 
+        const checkCartId = cartId.split(''); 
+
+        if(checkCartId.length == 24 && checkProductId.length == 24){
+
             const products = new apiProductos('productos',productsSchema); 
             const product = await products.findById(productId); 
-            await this.collection.updateOne({_id:cartId},{
-                $pull:{productos:product}
-            }); 
+            const productIdArray = product.map(e => e.id); 
 
-            return true; 
+            const cart = await this.collection.find({_id:cartId}); 
+            const cartIdArray = cart.map(e => e.id);
+
+            if(cartIdArray.includes(cartId) && productIdArray.includes(productId)){
+
+                await this.collection.updateOne({_id:cartId},{
+                    $pull:{productos:product}
+                }); 
+    
+                return true; 
+            }else{
+                return false; 
+            }
+
         }else{
             return false; 
         }
     }
-
-
 }

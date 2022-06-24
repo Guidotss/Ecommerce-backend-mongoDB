@@ -63,12 +63,15 @@ export class Productos{
         const checkProductId = productId.split(''); 
 
         if(checkProductId.length == 24){
+
             const product = await this.collection.find({_id:productId}); 
             const productIdArray = product.map(e => e.id); 
 
             if(productIdArray.includes(productId)){
+
                 await this.collection.deleteOne({_id:productId}); 
                 return true; 
+                
             }else{
                 return false; 
             }
