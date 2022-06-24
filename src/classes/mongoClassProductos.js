@@ -8,68 +8,91 @@ export class Productos{
         this.collection = mongoose.model(collection,Schema); 
     }
 
-
     async getAll(){
-        const allProducts = await this.collection.find({}); 
 
+        const allProducts = await this.collection.find({}); 
         return allProducts;
     }
 
-    async create(product){
-        const productString = JSON.stringify(product); 
-
+    async create(newProduct){
+        const productString = JSON.stringify(newProduct); 
+        
         if(productString != '{}'){
-            await this.collection.create(product);
-            return true; 
+
+            const addNewproduct = await this.collection.create(newProduct);
+            return addNewproduct; 
+
         }else{
-            return false;
+            return undefined;
         }
     }
 
     async update(productId,obj){
 
-        const product = await this.collection.find({_id:productId});
-        const productString = JSON.stringify(product); 
-
-        if(productString != '[]'){
-
-            await this.collection.updateOne({_id:productId},{
-                $set:{nombre:obj.nombre,precio:obj.precio,url:obj.url,stock:obj.stock, timeStamp:obj.timeStamp}
-            });
-
-            console.log(product);
-
-            return true; 
-        }else{
-            return false; 
-        }
-    }
-    async deleteProduct(productId){
-            
-        if(productId != ''){
-            await this.collection.deleteOne({_id:productId});
-            return true;
-
-        }else{
-            return false;
-        }
-    }
-
-    async findById(productId){
-        const productIdString = JSON.stringify(productId); 
-
         const checkProductId = productId.split(''); 
 
         if(checkProductId.length == 24){
 
+            const product = await this.collection.find({_id:productId});
+            const productIdArray = product.map(e => e.id); 
+            
+            if(productIdArray.includes(productId)){
+                const productString = JSON.stringify(product); 
+    
+                if(productString != '[]'){
+    
+                    await this.collection.updateOne({_id:productId},{
+                        $set:{nombre:obj.nombre,precio:obj.precio,url:obj.url,stock:obj.stock, timeStamp:obj.timeStamp}
+                    });
+    
+                    return true; 
+    
+                }else{
+                    return false;   
+                }            
+            }else{
+                return false; 
+            }            
+        }else{
+            return false; 
+        }
+    }
 
-            if(productIdString != ''){
-                const product = await this.collection.find({_id:productId}); 
+    async deleteProduct(productId){
+
+        const checkProductId = productId.split(''); 
+
+        if(checkProductId.length == 24){
+            const product = await this.collection.find({_id:productId}); 
+            const productIdArray = product.map(e => e.id); 
+
+            if(productIdArray.includes(productId)){
+                await this.collection.deleteOne({_id:productId}); 
+                return true; 
+            }else{
+                return false; 
+            }
+        }else{
+            return false; 
+        }
+    }
+
+    async findById(productId){
+
+        const checkProductId = productId.split(''); 
+
+        if(checkProductId.length == 24){
+            const product = await this.collection.find({_id:productId}); 
+            const productIdArray = product.map(e => e.id); 
+
+            if(productIdArray.includes(productId)){
                 return product; 
             }else{
-                return 'No se ha encontrado el productos'; 
-            }
+                return undefined; 
+            }           
 
+        }else{
+            return undefined; 
         }
     }
 }
